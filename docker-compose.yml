@@ -1,0 +1,14 @@
+services:
+  web-app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: working-out-hobby-container
+    ports:
+      - "5000:8080"
+    environment:
+      # Inject conn string from .env into conn string from appsettings (using .secrets.json)
+      - ConnectionStrings__workoutDb=${workoutDb}
+      - ASPNETCORE_ENVIRONMENT=Development
+      - PORT=8080
+    restart: always
