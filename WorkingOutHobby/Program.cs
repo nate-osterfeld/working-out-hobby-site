@@ -14,7 +14,13 @@ builder.Services.AddControllersWithViews();
 builder.Configuration.AddJsonFile("appsettings.secrets.json", optional: true, reloadOnChange: true);
 
 builder.Services.AddDbContext<WorkoutDbContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("workoutDb")));
+    options.UseSqlServer(builder.Configuration.GetConnectionString("workoutDb"), sqlOptions =>
+    {
+        sqlOptions.EnableRetryOnFailure(
+            maxRetryCount: 5,
+            maxRetryDelay: TimeSpan.FromSeconds(10),
+            errorNumbersToAdd: null);
+    }));
 
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
